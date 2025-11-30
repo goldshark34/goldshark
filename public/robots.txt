@@ -1,0 +1,16 @@
+# Gold Shark Yatçılık - Robots.txt
+
+User-agent: *
+Allow: /
+
+# Sitemap
+Sitemap: https://goldshark.com/sitemap.xml
+
+# Admin paneli arama motorlarından gizle
+Disallow: /admin/
+Disallow: /admin/login
+Disallow: /admin/dashboard
+Disallow: /admin/products
+
+# Crawl hızı
+Crawl-delay: 1
