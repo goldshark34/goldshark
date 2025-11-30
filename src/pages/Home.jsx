@@ -11,19 +11,19 @@ const Home = () => {
 
   const heroSlides = [
     {
-      image: `${import.meta.env.BASE_URL}hero-1.jpg`,
+      image: "https://images.unsplash.com/photo-1567899378494-47b22a2ae96a?ixlib=rb-4.0.3&auto=format&fit=crop&w=1920&q=80",
       buttonTextKey: "home.hero.ribBoat",
       buttonLink: "/rib-boat",
       icon: "🚤"
     },
     {
-      image: `${import.meta.env.BASE_URL}hero-2.jpg`,
+      image: "https://images.unsplash.com/photo-1559827260-dc66d52bef19?ixlib=rb-4.0.3&auto=format&fit=crop&w=1920&q=80",
       buttonTextKey: "home.hero.equipment",
       buttonLink: "/equipment",
       icon: "⚙️"
     },
     {
-      image: `${import.meta.env.BASE_URL}hero-3.jpg`,
+      image: "https://images.unsplash.com/photo-1540946485063-a40da27545f8?ixlib=rb-4.0.3&auto=format&fit=crop&w=1920&q=80",
       buttonTextKey: "home.hero.allProducts",
       buttonLink: "/products",
       icon: "🛥️"
