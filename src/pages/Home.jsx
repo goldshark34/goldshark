@@ -11,19 +11,19 @@ const Home = () => {
 
   const heroSlides = [
     {
-      image: "/hero-1.jpg",
+      image: `${import.meta.env.BASE_URL}hero-1.jpg`,
       buttonTextKey: "home.hero.ribBoat",
       buttonLink: "/rib-boat",
       icon: "🚤"
     },
     {
-      image: "/hero-2.jpg",
+      image: `${import.meta.env.BASE_URL}hero-2.jpg`,
       buttonTextKey: "home.hero.equipment",
       buttonLink: "/equipment",
       icon: "⚙️"
     },
     {
-      image: "/hero-3.jpg",
+      image: `${import.meta.env.BASE_URL}hero-3.jpg`,
       buttonTextKey: "home.hero.allProducts",
       buttonLink: "/products",
       icon: "🛥️"
