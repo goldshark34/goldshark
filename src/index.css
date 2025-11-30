@@ -1,0 +1,135 @@
+/* Gold Shark Yatçılık - Global Styles */
+
+:root {
+  /* Logo Renkleri */
+  --primary-navy: #0A1F3A;
+  --secondary-navy: #1A3B5D;
+  --accent-turquoise: #5DD3D3;
+  --accent-light-blue: #4FC3C3;
+  --white: #FFFFFF;
+  --light-gray: #F8F9FA;
+  --text-muted: #6C757D;
+}
+
+body {
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen',
+    'Ubuntu', 'Cantarell', 'Fira Sans', 'Droid Sans', 'Helvetica Neue',
+    sans-serif;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+/* Primary Button Override */
+.btn-primary {
+  background-color: var(--accent-turquoise) !important;
+  border-color: var(--accent-turquoise) !important;
+  color: var(--primary-navy) !important;
+  font-weight: 600;
+}
+
+.btn-primary:hover {
+  background-color: var(--accent-light-blue) !important;
+  border-color: var(--accent-light-blue) !important;
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(93, 211, 211, 0.4) !important;
+}
+
+/* Outline Primary Button */
+.btn-outline-primary {
+  border-color: var(--accent-turquoise) !important;
+  color: var(--accent-turquoise) !important;
+}
+
+.btn-outline-primary:hover {
+  background-color: var(--accent-turquoise) !important;
+  border-color: var(--accent-turquoise) !important;
+  color: var(--primary-navy) !important;
+}
+
+/* Text Primary */
+.text-primary {
+  color: var(--accent-turquoise) !important;
+}
+
+/* Background Primary */
+.bg-primary {
+  background-color: var(--accent-turquoise) !important;
+}
+
+/* Links */
+a {
+  color: var(--accent-turquoise);
+  text-decoration: none;
+  transition: all 0.3s ease;
+}
+
+a:hover {
+  color: var(--accent-light-blue);
+}
+
+/* Cards */
+.card {
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+.card:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 8px 20px rgba(93, 211, 211, 0.2) !important;
+}
+
+/* Badges */
+.badge.bg-primary {
+  background-color: var(--accent-turquoise) !important;
+  color: var(--primary-navy) !important;
+}
+
+/* Form Controls Focus */
+.form-control:focus,
+.form-select:focus {
+  border-color: var(--accent-turquoise) !important;
+  box-shadow: 0 0 0 0.25rem rgba(93, 211, 211, 0.25) !important;
+}
+
+/* Navbar */
+.navbar-dark {
+  background: linear-gradient(135deg, var(--primary-navy) 0%, var(--secondary-navy) 100%) !important;
+}
+
+/* Spinner */
+.spinner-border-primary {
+  color: var(--accent-turquoise) !important;
+}
+
+/* Custom Scrollbar */
+::-webkit-scrollbar {
+  width: 10px;
+}
+
+::-webkit-scrollbar-track {
+  background: var(--light-gray);
+}
+
+::-webkit-scrollbar-thumb {
+  background: var(--accent-turquoise);
+  border-radius: 5px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: var(--accent-light-blue);
+}
+
+/* Smooth Scroll */
+html {
+  scroll-behavior: smooth;
+}
+
+/* Selection */
+::selection {
+  background-color: var(--accent-turquoise);
+  color: var(--white);
+}
+
+::-moz-selection {
+  background-color: var(--accent-turquoise);
+  color: var(--white);
+}

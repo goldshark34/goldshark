@@ -1,0 +1,108 @@
+/* Gold Shark Yatçılık - App Styles */
+
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+:root {
+  /* Logo ile Uyumlu Renkler */
+  --primary-navy: #0A1F3A;
+  --secondary-navy: #1A3B5D;
+  --accent-turquoise: #5DD3D3;
+  --accent-light-blue: #4FC3C3;
+  --white: #FFFFFF;
+  --light-gray: #F8F9FA;
+  --dark-gray: #2C3E50;
+}
+
+body {
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+  line-height: 1.6;
+  color: var(--dark-gray);
+  background-color: var(--light-gray);
+}
+
+/* Smooth Animations */
+* {
+  transition: all 0.3s ease;
+}
+
+/* Custom Container */
+.container-custom {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 0 20px;
+}
+
+/* Gradient Backgrounds */
+.bg-gradient-navy {
+  background: linear-gradient(135deg, var(--primary-navy) 0%, var(--secondary-navy) 100%);
+}
+
+.bg-gradient-turquoise {
+  background: linear-gradient(135deg, var(--accent-turquoise) 0%, var(--accent-light-blue) 100%);
+}
+
+/* Text Colors */
+.text-turquoise {
+  color: var(--accent-turquoise) !important;
+}
+
+.text-navy {
+  color: var(--primary-navy) !important;
+}
+
+/* Hover Effects */
+.hover-lift {
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+.hover-lift:hover {
+  transform: translateY(-8px);
+  box-shadow: 0 12px 24px rgba(93, 211, 211, 0.2) !important;
+}
+
+/* Custom Buttons */
+.btn-turquoise {
+  background-color: var(--accent-turquoise);
+  border-color: var(--accent-turquoise);
+  color: var(--primary-navy);
+  font-weight: 600;
+}
+
+.btn-turquoise:hover {
+  background-color: var(--accent-light-blue);
+  border-color: var(--accent-light-blue);
+  color: var(--primary-navy);
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(93, 211, 211, 0.4);
+}
+
+/* Section Spacing */
+.section-padding {
+  padding: 80px 0;
+}
+
+/* Animations */
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.fade-in {
+  animation: fadeIn 0.6s ease-out;
+}
+
+/* Loading Spinner */
+.spinner-turquoise {
+  border-color: var(--accent-turquoise);
+  border-right-color: transparent;
+}
