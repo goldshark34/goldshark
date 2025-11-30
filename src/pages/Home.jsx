@@ -11,19 +11,19 @@ const Home = () => {
 
   const heroSlides = [
     {
-      image: "https://img.sanishtech.com/u/b6f956e0a4b015375231355c5cc2e411.png",
+      image: "/hero-1.jpg",
       buttonTextKey: "home.hero.ribBoat",
       buttonLink: "/rib-boat",
       icon: "🚤"
     },
     {
-      image: "https://img.sanishtech.com/u/409c82494af54645df940ad057305601.png",
+      image: "/hero-2.jpg",
       buttonTextKey: "home.hero.equipment",
       buttonLink: "/equipment",
       icon: "⚙️"
     },
     {
-      image: "https://img.sanishtech.com/u/bf22ca4ca72477549d38705bc6979454.png",
+      image: "/hero-3.jpg",
       buttonTextKey: "home.hero.allProducts",
       buttonLink: "/products",
       icon: "🛥️"
