@@ -8,6 +8,13 @@ const Equipment = () => {
 
   useEffect(() => {
     loadEquipment()
+    
+    // Her 5 saniyede bir ürünleri yenile
+    const interval = setInterval(() => {
+      loadEquipment()
+    }, 5000)
+    
+    return () => clearInterval(interval)
   }, [])
 
   const loadEquipment = async () => {

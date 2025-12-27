@@ -34,6 +34,8 @@ const saveToStorage = (products) => {
 export const productService = {
   async getAllProducts() {
     try {
+      console.log('🔄 ProductService: Ürünler yükleniyor...')
+      
       // Önce Supabase'i dene
       const { data, error } = await supabase
         .from('products')
@@ -56,11 +58,12 @@ export const productService = {
         .order('createddate', { ascending: false })
 
       if (error) {
-        console.warn('Supabase hatası:', error)
+        console.warn('⚠️ Supabase hatası:', error)
         throw error
       }
       
-      console.log('📥 Supabase\'den gelen veri:', data)
+      console.log('📥 Supabase\'den gelen ham veri:', data)
+      console.log('📊 Toplam ürün sayısı:', data?.length || 0)
       
       if (data && data.length > 0) {
         // Veriyi düzenle
@@ -72,10 +75,10 @@ export const productService = {
               ? JSON.parse(product.specifications) 
               : product.specifications || {}
           } catch (e) {
-            console.warn('Specifications parse hatası:', e)
+            console.warn('⚠️ Specifications parse hatası:', e, 'Ürün:', product.name)
           }
 
-          return {
+          const formatted = {
             ProductID: product.productid,
             ProductName: product.name,
             Slug: product.slug,
@@ -96,17 +99,30 @@ export const productService = {
             CreatedDate: product.createddate,
             ProductImages: product.productimages || []
           }
+          
+          console.log(`📦 Formatlanmış ürün: ${formatted.ProductName}`, {
+            kategori: formatted.Categories?.name,
+            specifications: formatted.Specifications,
+            images: formatted.ProductImages?.length || 0
+          })
+          
+          return formatted
         })
         
-        console.log('✅ Formatlanmış veri:', formattedData)
+        console.log('✅ Tüm formatlanmış ürünler:', formattedData.length, 'adet')
         return formattedData
+      } else {
+        console.log('📭 Supabase\'den veri gelmedi, LocalStorage kontrol ediliyor...')
       }
     } catch (error) {
-      console.warn('Supabase ürünleri yüklenemedi, local data kullanılıyor:', error)
+      console.warn('⚠️ Supabase ürünleri yüklenemedi, local data kullanılıyor:', error)
     }
     
     // LocalStorage'dan yükle
-    return loadFromStorage()
+    console.log('💾 LocalStorage\'dan ürünler yükleniyor...')
+    const localData = loadFromStorage()
+    console.log('📦 LocalStorage\'dan gelen ürün sayısı:', localData.length)
+    return localData
   },
 
   async getProductBySlug(slug) {
