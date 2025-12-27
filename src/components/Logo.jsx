@@ -1,8 +1,8 @@
 import React from 'react'
 
 const Logo = ({ width = 70, height = 70, className = "", style = {} }) => {
-  // Eski logo URL'si
-  const logoUrl = "https://img.sanishtech.com/u/08b7b90d54b686b1efdb75a49ab7a9e8.png"
+  // Yeni logo URL'si
+  const logoUrl = "https://i.ibb.co/Z1chvfxy/Ekran-g-r-nt-s-2025-11-29-172417-Photoroom.png"
   
   return (
     <img 
