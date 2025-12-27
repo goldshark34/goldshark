@@ -3,6 +3,7 @@ import { Container, Row, Col, Card, Button, Badge } from 'react-bootstrap'
 import { Link } from 'react-router-dom'
 import { productService } from '../services/productService'
 import { useLanguage } from '../context/LanguageContext'
+import Logo from '../components/Logo'
 
 const Home = () => {
   const [activeSlide, setActiveSlide] = useState(0)
@@ -37,7 +38,15 @@ const Home = () => {
     
     loadFeaturedYachts()
     
-    return () => clearInterval(timer)
+    // Ürünleri her 10 saniyede bir yenile
+    const productTimer = setInterval(() => {
+      loadFeaturedYachts()
+    }, 10000)
+    
+    return () => {
+      clearInterval(timer)
+      clearInterval(productTimer)
+    }
   }, [])
   
   // Debug: featuredYachts değiştiğinde konsola yaz
@@ -318,15 +327,7 @@ const Home = () => {
                   minHeight: '400px'
                 }}
               >
-                <img 
-                  src="https://img.sanishtech.com/u/08b7b90d54b686b1efdb75a49ab7a9e8.png" 
-                  alt="Gold Shark Yatçılık Logo" 
-                  style={{ 
-                    maxWidth: '80%',
-                    maxHeight: '80%',
-                    objectFit: 'contain'
-                  }}
-                />
+                <Logo width={200} height={200} />
               </div>
             </Col>
             <Col md={6}>

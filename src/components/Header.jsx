@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react'
 import { Navbar, Nav, Container, Button, Badge, NavDropdown } from 'react-bootstrap'
 import { Link, useNavigate, useLocation } from 'react-router-dom'
 import { useLanguage } from '../context/LanguageContext'
+import Logo from './Logo'
 
 const Header = () => {
   const navigate = useNavigate()
@@ -41,16 +42,7 @@ const Header = () => {
           onMouseEnter={(e) => e.currentTarget.style.transform = 'scale(1.05)'}
           onMouseLeave={(e) => e.currentTarget.style.transform = 'scale(1)'}
         >
-          <img 
-            src="https://img.sanishtech.com/u/08b7b90d54b686b1efdb75a49ab7a9e8.png" 
-            alt="Gold Shark Yatçılık Logo" 
-            style={{ 
-              width: '70px', 
-              height: '70px',
-              objectFit: 'contain',
-              marginRight: '12px'
-            }}
-          />
+          <Logo width={70} height={70} style={{ marginRight: '12px' }} />
           <div>
             <div className="fw-bold fs-5 text-white" style={{ letterSpacing: '1px' }}>
               GOLD SHARK YATÇILIK

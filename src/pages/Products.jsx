@@ -12,6 +12,13 @@ const Products = () => {
 
   useEffect(() => {
     loadProducts()
+    
+    // Her 5 saniyede bir ürünleri yenile (real-time güncelleme için)
+    const interval = setInterval(() => {
+      loadProducts()
+    }, 5000)
+    
+    return () => clearInterval(interval)
   }, [])
 
   const loadProducts = async () => {

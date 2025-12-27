@@ -2,6 +2,7 @@ import React, { useState } from 'react'
 import { useNavigate, useLocation } from 'react-router-dom'
 import { Container, Row, Col, Card, Form, Button, Alert, InputGroup } from 'react-bootstrap'
 import { useAuth } from '../../context/AuthContext'
+import Logo from '../../components/Logo'
 
 const AdminLogin = () => {
   const [formData, setFormData] = useState({
@@ -59,11 +60,7 @@ const AdminLogin = () => {
             <Card className="border-0 shadow-lg" style={{ borderRadius: '20px', overflow: 'hidden' }}>
               {/* Header */}
               <div className="bg-dark text-white text-center py-5">
-                <img 
-                  src="https://img.sanishtech.com/u/08b7b90d54b686b1efdb75a49ab7a9e8.png" 
-                  alt="Logo" 
-                  style={{ width: '80px', height: '80px', objectFit: 'contain', marginBottom: '1rem' }}
-                />
+                <Logo width={80} height={80} style={{ marginBottom: '1rem' }} />
                 <h2 className="fw-bold mb-2">Admin Panel</h2>
                 <p className="text-white mb-0">Gold Shark Yatçılık Yönetim Sistemi</p>
               </div>
