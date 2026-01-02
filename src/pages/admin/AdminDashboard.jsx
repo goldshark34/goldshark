@@ -111,7 +111,7 @@ const AdminDashboard = () => {
             <Col>
               <h4 className="mb-0 fw-bold">
                 <img 
-                  src="https://img.sanishtech.com/u/08b7b90d54b686b1efdb75a49ab7a9e8.png" 
+                  src="https://img.sanishtech.com/u/d8f847772a55382e7fba8bb8b16ac21a.png" 
                   alt="Logo" 
                   style={{ width: '30px', height: '30px', objectFit: 'contain', marginRight: '8px' }}
                 />

@@ -2,7 +2,7 @@ import React from 'react'
 
 const Logo = ({ width = 70, height = 70, className = "", style = {} }) => {
   // Yeni logo URL'si
-  const logoUrl = "https://i.ibb.co/Z1chvfxy/Ekran-g-r-nt-s-2025-11-29-172417-Photoroom.png"
+  const logoUrl = "https://img.sanishtech.com/u/d8f847772a55382e7fba8bb8b16ac21a.png"
   
   return (
     <img 
