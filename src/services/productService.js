@@ -161,22 +161,82 @@ export const productService = {
     const startTime = performance.now()
     
     try {
-      console.log('🔄 ProductService: Ürünler yükleniyor (Hızlı Mod)...')
+      console.log('🔄 ProductService: Gerçek ürünler yükleniyor...')
       
-      // Önce mock data'yı hemen döndür
+      // Basit ve hızlı Supabase sorgusu
+      const { data, error } = await supabase
+        .from('products')
+        .select('productid, name, slug, price, specifications, createddate')
+        .eq('isactive', true)
+        .order('createddate', { ascending: false })
+        .limit(10) // Sadece 10 ürün
+
+      if (error) {
+        console.warn('⚠️ Supabase hatası:', error)
+        // Fallback to mock data
+        console.log('📦 Mock data kullanılıyor...')
+        return mockProducts
+      }
+      
       const loadTime = performance.now() - startTime
-      console.log(`⚡ Mock ürünler ${loadTime.toFixed(2)}ms'de yüklendi`)
-      console.log('📥 Mock veri:', mockProducts.length, 'ürün')
+      console.log(`⚡ Gerçek ürünler ${loadTime.toFixed(2)}ms'de yüklendi`)
+      console.log('📥 Supabase\'den gelen veri:', data?.length || 0, 'ürün')
       
-      // Mock data'yı localStorage'a kaydet
-      saveToStorage(mockProducts)
+      if (data && data.length > 0) {
+        const formattedData = data.map(product => {
+          let specs = {}
+          try {
+            specs = typeof product.specifications === 'string' 
+              ? JSON.parse(product.specifications) 
+              : product.specifications || {}
+          } catch (e) {
+            console.warn('⚠️ Specifications parse hatası:', e)
+          }
+
+          return {
+            ProductID: product.productid,
+            ProductName: product.name,
+            Slug: product.slug,
+            CategoryID: 1,
+            Categories: { name: 'Genel' },
+            ShortDescription: '',
+            Description: '',
+            Specifications: specs,
+            Price: product.price,
+            ProductType: specs.type || 'Sale',
+            Length: specs.length || specs.uzunluk || null,
+            Year: specs.year || specs.yil || null,
+            Cabins: specs.cabins || specs.kabin || null,
+            Capacity: specs.capacity || specs.kapasite || null,
+            Speed: specs.speed || specs.hiz || null,
+            Stock: 1,
+            IsActive: true,
+            CreatedDate: product.createddate,
+            ProductImages: [
+              {
+                ImageURL: 'https://images.unsplash.com/photo-1567899378494-47b22a2ae96a?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80',
+                imageurl: 'https://images.unsplash.com/photo-1567899378494-47b22a2ae96a?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80'
+              }
+            ]
+          }
+        })
+        
+        // LocalStorage'a da kaydet (fallback için)
+        saveToStorage(formattedData)
+        
+        console.log('✅ Gerçek ürünler formatlandı:', formattedData.length, 'adet')
+        return formattedData
+      }
       
+      // Fallback to mock data
+      console.log('📦 Veri yok, mock data kullanılıyor...')
       return mockProducts
 
     } catch (error) {
       console.error('❌ Ürün yükleme hatası:', error)
-      // Final fallback to localStorage
-      return loadFromStorage()
+      // Final fallback to mock data
+      console.log('📦 Hata durumu, mock data kullanılıyor...')
+      return mockProducts
     }
   },
 
