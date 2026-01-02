@@ -14,10 +14,10 @@ const Products = () => {
   useEffect(() => {
     loadProducts()
     
-    // Her 5 saniyede bir ürünleri yenile (real-time güncelleme için)
+    // Her 2 dakikada bir ürünleri yenile (120 saniye)
     const interval = setInterval(() => {
       loadProducts()
-    }, 5000)
+    }, 120000)
     
     return () => clearInterval(interval)
   }, [])

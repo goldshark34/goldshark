@@ -10,10 +10,10 @@ const Equipment = () => {
   useEffect(() => {
     loadEquipment()
     
-    // Her 5 saniyede bir ürünleri yenile
+    // Her 2 dakikada bir ürünleri yenile (120 saniye)
     const interval = setInterval(() => {
       loadEquipment()
-    }, 5000)
+    }, 120000)
     
     return () => clearInterval(interval)
   }, [])

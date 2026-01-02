@@ -38,10 +38,10 @@ const Home = () => {
     
     loadFeaturedYachts()
     
-    // Ürünleri her 10 saniyede bir yenile
+    // Ürünleri her 2 dakikada bir yenile (120 saniye)
     const productTimer = setInterval(() => {
       loadFeaturedYachts()
-    }, 10000)
+    }, 120000)
     
     return () => {
       clearInterval(timer)

@@ -10,10 +10,10 @@ const RibBoat = () => {
   useEffect(() => {
     loadRibBoats()
     
-    // Her 5 saniyede bir ürünleri yenile
+    // Her 2 dakikada bir ürünleri yenile (120 saniye)
     const interval = setInterval(() => {
       loadRibBoats()
-    }, 5000)
+    }, 120000)
     
     return () => clearInterval(interval)
   }, [])
