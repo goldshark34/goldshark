@@ -82,34 +82,21 @@ const Footer = () => {
                   />
                 </Button>
                 <Button 
+                  as="a"
+                  href="https://www.facebook.com/share/14XoFoTZdxG/"
+                  target="_blank"
+                  rel="noopener noreferrer"
                   variant="outline-light" 
                   size="sm" 
-                  className="rounded-circle d-flex align-items-center justify-content-center"
-                  style={{ width: '40px', height: '40px', opacity: 0.5 }}
-                  disabled
-                  title="Yakında"
+                  className="rounded-circle d-flex align-items-center justify-content-center p-0"
+                  style={{ width: '40px', height: '40px', border: 'none' }}
+                  title="Facebook'ta Takip Edin"
                 >
-                  📘
-                </Button>
-                <Button 
-                  variant="outline-light" 
-                  size="sm" 
-                  className="rounded-circle d-flex align-items-center justify-content-center"
-                  style={{ width: '40px', height: '40px', opacity: 0.5 }}
-                  disabled
-                  title="Yakında"
-                >
-                  🐦
-                </Button>
-                <Button 
-                  variant="outline-light" 
-                  size="sm" 
-                  className="rounded-circle d-flex align-items-center justify-content-center"
-                  style={{ width: '40px', height: '40px', opacity: 0.5 }}
-                  disabled
-                  title="Yakında"
-                >
-                  💼
+                  <img 
+                    src="https://img.freepik.com/premium-vector/blue-social-media-logo_197792-1759.jpg?semt=ais_hybrid&w=740&q=80"
+                    alt="Facebook"
+                    style={{ width: '24px', height: '24px', borderRadius: '4px' }}
+                  />
                 </Button>
               </div>
             </Col>

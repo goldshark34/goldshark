@@ -197,31 +197,20 @@ const Contact = () => {
                     />
                   </Button>
                   <Button 
+                    as="a"
+                    href="https://www.facebook.com/share/14XoFoTZdxG/"
+                    target="_blank"
+                    rel="noopener noreferrer"
                     variant="outline-primary" 
-                    className="rounded-circle d-flex align-items-center justify-content-center" 
-                    style={{ width: '45px', height: '45px', opacity: 0.5 }}
-                    disabled
-                    title="Yakında"
+                    className="rounded-circle d-flex align-items-center justify-content-center p-0" 
+                    style={{ width: '45px', height: '45px', border: 'none' }}
+                    title="Facebook'ta Takip Edin"
                   >
-                    📘
-                  </Button>
-                  <Button 
-                    variant="outline-info" 
-                    className="rounded-circle d-flex align-items-center justify-content-center" 
-                    style={{ width: '45px', height: '45px', opacity: 0.5 }}
-                    disabled
-                    title="Yakında"
-                  >
-                    🐦
-                  </Button>
-                  <Button 
-                    variant="outline-dark" 
-                    className="rounded-circle d-flex align-items-center justify-content-center" 
-                    style={{ width: '45px', height: '45px', opacity: 0.5 }}
-                    disabled
-                    title="Yakında"
-                  >
-                    💼
+                    <img 
+                      src="https://img.freepik.com/premium-vector/blue-social-media-logo_197792-1759.jpg?semt=ais_hybrid&w=740&q=80"
+                      alt="Facebook"
+                      style={{ width: '28px', height: '28px', borderRadius: '6px' }}
+                    />
                   </Button>
                 </div>
                 <small className="text-muted mt-2 d-block">
