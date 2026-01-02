@@ -234,11 +234,53 @@ const Contact = () => {
 
         {/* Map Section */}
         <Card className="border-0 shadow-sm mt-4">
+          <Card.Header className="bg-primary text-white py-3">
+            <h5 className="mb-0 fw-bold">📍 Konumumuz</h5>
+          </Card.Header>
           <Card.Body className="p-0">
-            <div style={{ height: '400px', background: '#e9ecef', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
-              <div className="text-center">
-                <div className="fs-1 mb-3">🗺️</div>
-                <p className="text-muted">Harita buraya eklenecek</p>
+            <div style={{ height: '400px', position: 'relative' }}>
+              <iframe
+                src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3151.835434509374!2d26.8397!3d38.1975!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x14bbd862a1234567%3A0x1234567890abcdef!2sCamikebir%20Mah.%207.%20Sk.%20No%3A7%2F2%2C%2035460%20Seferihisar%2F%C4%B0zmir!5e0!3m2!1str!2str!4v1234567890123!5m2!1str!2str"
+                width="100%"
+                height="400"
+                style={{ border: 0 }}
+                allowFullScreen=""
+                loading="lazy"
+                referrerPolicy="no-referrer-when-downgrade"
+                title="Gold Shark Yatçılık Konum"
+              ></iframe>
+              
+              {/* Harita Üzerinde Bilgi Kartı */}
+              <div 
+                className="position-absolute bg-white shadow-lg rounded p-3"
+                style={{ 
+                  top: '20px', 
+                  left: '20px', 
+                  maxWidth: '300px',
+                  zIndex: 1000
+                }}
+              >
+                <h6 className="fw-bold mb-2 text-primary">🏢 Gold Shark Yatçılık</h6>
+                <p className="small mb-2 text-muted">
+                  📍 Camikebir mah. 7. sokak, No: 7/2<br />
+                  Seferihisar/İzmir
+                </p>
+                <div className="d-flex gap-2">
+                  <a 
+                    href="https://maps.app.goo.gl/a53K6kzDrk4zS6ts5" 
+                    target="_blank" 
+                    rel="noopener noreferrer"
+                    className="btn btn-primary btn-sm"
+                  >
+                    🗺️ Yol Tarifi
+                  </a>
+                  <a 
+                    href="tel:+905533686635" 
+                    className="btn btn-success btn-sm"
+                  >
+                    📞 Ara
+                  </a>
+                </div>
               </div>
             </div>
           </Card.Body>
