@@ -10,10 +10,10 @@ const RibBoat = () => {
   useEffect(() => {
     loadRibBoats()
     
-    // Her 2 dakikada bir ürünleri yenile (120 saniye)
+    // Her 3 dakikada bir ürünleri yenile (180 saniye)
     const interval = setInterval(() => {
       loadRibBoats()
-    }, 120000)
+    }, 180000)
     
     return () => clearInterval(interval)
   }, [])
@@ -90,7 +90,7 @@ const RibBoat = () => {
                     <div className="position-relative overflow-hidden" style={{ height: '280px' }}>
                       <Card.Img 
                         variant="top" 
-                        src={product.ProductImages?.[0]?.ImageURL || product.ProductImages?.[0]?.imageurl || product.image || 'https://images.unsplash.com/photo-1567899378494-47b22a2ae96a?w=800'}
+                        src={product.ProductImages?.[0]?.imageurl || product.ProductImages?.[0]?.ImageURL || product.image || 'https://images.unsplash.com/photo-1567899378494-47b22a2ae96a?w=800'}
                         style={{ height: '100%', objectFit: 'cover' }}
                       />
                       <Badge bg="primary" className="position-absolute top-0 start-0 m-3 px-3 py-2">

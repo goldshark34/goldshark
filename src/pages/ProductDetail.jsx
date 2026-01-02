@@ -102,7 +102,7 @@ const ProductDetail = () => {
                   <Carousel.Item key={index}>
                     <img
                       className="d-block w-100"
-                      src={image.ImageURL || image.imageurl}
+                      src={image.imageurl || image.ImageURL}
                       alt={`${product.ProductName} - Görsel ${index + 1}`}
                       style={{ height: '500px', objectFit: 'cover', borderRadius: '15px' }}
                     />

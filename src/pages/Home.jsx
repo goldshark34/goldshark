@@ -87,8 +87,8 @@ const Home = () => {
       for (let i = 0; i < productsToShow.length; i++) {
         const product = productsToShow[i]
         
-        const imageUrl = product.ProductImages?.[0]?.ImageURL || 
-                        product.ProductImages?.[0]?.imageurl || 
+        const imageUrl = product.ProductImages?.[0]?.imageurl || 
+                        product.ProductImages?.[0]?.ImageURL || 
                         'https://images.unsplash.com/photo-1567899378494-47b22a2ae96a?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80'
         
         featured.push({

@@ -39,7 +39,6 @@ const mockProducts = [
     CreatedDate: new Date().toISOString(),
     ProductImages: [
       {
-        ImageURL: 'https://images.unsplash.com/photo-1567899378494-47b22a2ae96a?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80',
         imageurl: 'https://images.unsplash.com/photo-1567899378494-47b22a2ae96a?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80'
       }
     ]
@@ -70,7 +69,6 @@ const mockProducts = [
     CreatedDate: new Date().toISOString(),
     ProductImages: [
       {
-        ImageURL: 'https://images.unsplash.com/photo-1559827260-dc66d52bef19?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80',
         imageurl: 'https://images.unsplash.com/photo-1559827260-dc66d52bef19?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80'
       }
     ]
@@ -101,7 +99,6 @@ const mockProducts = [
     CreatedDate: new Date().toISOString(),
     ProductImages: [
       {
-        ImageURL: 'https://images.unsplash.com/photo-1540946485063-a40da27545f8?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80',
         imageurl: 'https://images.unsplash.com/photo-1540946485063-a40da27545f8?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80'
       }
     ]
@@ -161,15 +158,28 @@ export const productService = {
     const startTime = performance.now()
     
     try {
-      console.log('🔄 ProductService: Gerçek ürünler yükleniyor...')
+      console.log('🔄 ProductService: Tüm ürünler görselleri ile yükleniyor...')
       
-      // Basit ve hızlı Supabase sorgusu
+      // Tam Supabase sorgusu - tüm bilgiler ve görseller
       const { data, error } = await supabase
         .from('products')
-        .select('productid, name, slug, price, specifications, createddate')
+        .select(`
+          productid,
+          name,
+          slug,
+          categoryid,
+          shortdescription,
+          description,
+          specifications,
+          price,
+          stock,
+          isactive,
+          createddate,
+          categories:categoryid (categoryid, name),
+          productimages:productid (imageid, imageurl, ismain)
+        `)
         .eq('isactive', true)
         .order('createddate', { ascending: false })
-        .limit(10) // Sadece 10 ürün
 
       if (error) {
         console.warn('⚠️ Supabase hatası:', error)
@@ -179,7 +189,7 @@ export const productService = {
       }
       
       const loadTime = performance.now() - startTime
-      console.log(`⚡ Gerçek ürünler ${loadTime.toFixed(2)}ms'de yüklendi`)
+      console.log(`⚡ Tüm ürünler ${loadTime.toFixed(2)}ms'de yüklendi`)
       console.log('📥 Supabase\'den gelen veri:', data?.length || 0, 'ürün')
       
       if (data && data.length > 0) {
@@ -190,17 +200,17 @@ export const productService = {
               ? JSON.parse(product.specifications) 
               : product.specifications || {}
           } catch (e) {
-            console.warn('⚠️ Specifications parse hatası:', e)
+            console.warn('⚠️ Specifications parse hatası:', e, 'Ürün:', product.name)
           }
 
           return {
             ProductID: product.productid,
             ProductName: product.name,
             Slug: product.slug,
-            CategoryID: 1,
-            Categories: { name: 'Genel' },
-            ShortDescription: '',
-            Description: '',
+            CategoryID: product.categoryid,
+            Categories: product.categories,
+            ShortDescription: product.shortdescription,
+            Description: product.description,
             Specifications: specs,
             Price: product.price,
             ProductType: specs.type || 'Sale',
@@ -209,22 +219,18 @@ export const productService = {
             Cabins: specs.cabins || specs.kabin || null,
             Capacity: specs.capacity || specs.kapasite || null,
             Speed: specs.speed || specs.hiz || null,
-            Stock: 1,
-            IsActive: true,
+            Stock: product.stock,
+            IsActive: product.isactive,
             CreatedDate: product.createddate,
-            ProductImages: [
-              {
-                ImageURL: 'https://images.unsplash.com/photo-1567899378494-47b22a2ae96a?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80',
-                imageurl: 'https://images.unsplash.com/photo-1567899378494-47b22a2ae96a?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80'
-              }
-            ]
+            ProductImages: product.productimages || []
           }
         })
         
         // LocalStorage'a da kaydet (fallback için)
         saveToStorage(formattedData)
         
-        console.log('✅ Gerçek ürünler formatlandı:', formattedData.length, 'adet')
+        console.log('✅ Tüm ürünler formatlandı:', formattedData.length, 'adet')
+        console.log('📸 İlk ürün görselleri:', formattedData[0]?.ProductImages?.length || 0, 'adet')
         return formattedData
       }
       
@@ -394,7 +400,7 @@ export const productService = {
       if (productData.images && productData.images.length > 0 && data) {
         console.log('📸 Görseller ekleniyor:', productData.images)
         for (const image of productData.images) {
-          const imageUrl = image.imageUrl || image.ImageURL || image
+          const imageUrl = image.imageUrl || image.imageurl || image.ImageURL || image
           const { error: imgError } = await supabase
             .from('productimages')
             .insert([{

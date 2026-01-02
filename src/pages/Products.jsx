@@ -50,6 +50,11 @@ const Products = () => {
       // Veritabanından gelen veriyi frontend formatına çevir
       const formattedYachts = data.map(product => {
         const specs = product.Specifications || {}
+        const imageUrl = product.ProductImages?.[0]?.imageurl || product.ProductImages?.[0]?.ImageURL || 'https://images.unsplash.com/photo-1567899378494-47b22a2ae96a?ixlib=rb-4.0.3&auto=format&fit=crop&w=1000&q=80'
+        
+        console.log(`🖼️ Ürün: ${product.ProductName}, Görsel URL: ${imageUrl}`)
+        console.log('📸 ProductImages:', product.ProductImages)
+        
         return {
           id: product.ProductID,
           slug: product.Slug || `product-${product.ProductID}`,
@@ -70,7 +75,7 @@ const Products = () => {
           year: specs.year || product.Year || new Date().getFullYear().toString(),
           cabins: specs.cabins || product.Cabins || '',
           speed: specs.speed || product.Speed || '',
-          image: product.ProductImages?.[0]?.ImageURL || product.ProductImages?.[0]?.imageurl || 'https://images.unsplash.com/photo-1567899378494-47b22a2ae96a?ixlib=rb-4.0.3&auto=format&fit=crop&w=1000&q=80',
+          image: imageUrl,
           category: product.Categories?.name || product.categoryName || 'Genel',
           shortDescription: product.ShortDescription || ''
         }

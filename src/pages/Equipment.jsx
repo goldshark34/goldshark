@@ -90,7 +90,7 @@ const Equipment = () => {
                     <div className="position-relative overflow-hidden" style={{ height: '280px' }}>
                       <Card.Img 
                         variant="top" 
-                        src={product.ProductImages?.[0]?.ImageURL || product.ProductImages?.[0]?.imageurl || product.image || 'https://images.unsplash.com/photo-1567899378494-47b22a2ae96a?w=800'}
+                        src={product.ProductImages?.[0]?.imageurl || product.ProductImages?.[0]?.ImageURL || product.image || 'https://images.unsplash.com/photo-1567899378494-47b22a2ae96a?w=800'}
                         style={{ height: '100%', objectFit: 'cover' }}
                       />
                       <Badge bg="success" className="position-absolute top-0 start-0 m-3 px-3 py-2">

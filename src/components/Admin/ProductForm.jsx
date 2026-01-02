@@ -88,7 +88,7 @@ const ProductForm = ({ product, categories, onSubmit, onCancel }) => {
       const productImages = product.ProductImages || product.images || []
       setImages(productImages)
       if (productImages.length > 0) {
-        setImageUrls(productImages.map(img => img.imageUrl || img.ImageURL))
+        setImageUrls(productImages.map(img => img.imageurl || img.imageUrl || img.ImageURL))
       }
     }
   }, [product])
