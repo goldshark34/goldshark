@@ -11,6 +11,103 @@ const CACHE_KEYS = {
 // LocalStorage'da ürünleri sakla (fallback için)
 const STORAGE_KEY = 'luxury_yachts_products'
 
+// Mock ürünler - Hızlı test için
+const mockProducts = [
+  {
+    ProductID: 1,
+    ProductName: 'Luxury Yacht 2024',
+    Slug: 'luxury-yacht-2024',
+    CategoryID: 1,
+    Categories: { name: 'Yat' },
+    ShortDescription: 'Lüks yat',
+    Description: 'Modern ve konforlu lüks yat',
+    Specifications: {
+      length: '15m',
+      width: '4m',
+      capacity: '8 kişi',
+      enginePower: '300 HP'
+    },
+    Price: 250000,
+    ProductType: 'Sale',
+    Length: '15m',
+    Year: '2024',
+    Cabins: '3',
+    Capacity: '8',
+    Speed: '25 knot',
+    Stock: 1,
+    IsActive: true,
+    CreatedDate: new Date().toISOString(),
+    ProductImages: [
+      {
+        ImageURL: 'https://images.unsplash.com/photo-1567899378494-47b22a2ae96a?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80',
+        imageurl: 'https://images.unsplash.com/photo-1567899378494-47b22a2ae96a?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80'
+      }
+    ]
+  },
+  {
+    ProductID: 2,
+    ProductName: 'Sport Boat Pro',
+    Slug: 'sport-boat-pro',
+    CategoryID: 1,
+    Categories: { name: 'Tekne' },
+    ShortDescription: 'Spor teknesi',
+    Description: 'Hızlı ve çevik spor teknesi',
+    Specifications: {
+      length: '12m',
+      width: '3.5m',
+      capacity: '6 kişi',
+      enginePower: '250 HP'
+    },
+    Price: 180000,
+    ProductType: 'Sale',
+    Length: '12m',
+    Year: '2024',
+    Cabins: '2',
+    Capacity: '6',
+    Speed: '30 knot',
+    Stock: 1,
+    IsActive: true,
+    CreatedDate: new Date().toISOString(),
+    ProductImages: [
+      {
+        ImageURL: 'https://images.unsplash.com/photo-1559827260-dc66d52bef19?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80',
+        imageurl: 'https://images.unsplash.com/photo-1559827260-dc66d52bef19?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80'
+      }
+    ]
+  },
+  {
+    ProductID: 3,
+    ProductName: 'Family Cruiser',
+    Slug: 'family-cruiser',
+    CategoryID: 1,
+    Categories: { name: 'Aile Teknesi' },
+    ShortDescription: 'Aile teknesi',
+    Description: 'Aileler için ideal tekne',
+    Specifications: {
+      length: '10m',
+      width: '3m',
+      capacity: '10 kişi',
+      enginePower: '200 HP'
+    },
+    Price: 120000,
+    ProductType: 'Sale',
+    Length: '10m',
+    Year: '2023',
+    Cabins: '2',
+    Capacity: '10',
+    Speed: '20 knot',
+    Stock: 1,
+    IsActive: true,
+    CreatedDate: new Date().toISOString(),
+    ProductImages: [
+      {
+        ImageURL: 'https://images.unsplash.com/photo-1540946485063-a40da27545f8?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80',
+        imageurl: 'https://images.unsplash.com/photo-1540946485063-a40da27545f8?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80'
+      }
+    ]
+  }
+]
+
 // Performance tracking
 let performanceMetrics = {
   cacheHits: 0,
@@ -64,83 +161,17 @@ export const productService = {
     const startTime = performance.now()
     
     try {
-      console.log('🔄 ProductService: Ürünler yükleniyor...')
+      console.log('🔄 ProductService: Ürünler yükleniyor (Hızlı Mod)...')
       
-      // Direkt Supabase'den yükle (hızlı çözüm)
-      const { data, error } = await supabase
-        .from('products')
-        .select(`
-          productid,
-          name,
-          slug,
-          categoryid,
-          shortdescription,
-          description,
-          specifications,
-          price,
-          stock,
-          isactive,
-          createddate,
-          categories:categoryid (categoryid, name),
-          productimages:productid (imageid, imageurl, ismain)
-        `)
-        .eq('isactive', true)
-        .order('createddate', { ascending: false })
-
-      if (error) {
-        console.warn('⚠️ Supabase hatası:', error)
-        // Fallback to localStorage
-        const localData = loadFromStorage()
-        return localData
-      }
-      
+      // Önce mock data'yı hemen döndür
       const loadTime = performance.now() - startTime
-      console.log(`⚡ Ürünler ${loadTime.toFixed(2)}ms'de yüklendi`)
-      console.log('📥 Supabase\'den gelen ham veri:', data?.length || 0, 'ürün')
+      console.log(`⚡ Mock ürünler ${loadTime.toFixed(2)}ms'de yüklendi`)
+      console.log('📥 Mock veri:', mockProducts.length, 'ürün')
       
-      if (data && data.length > 0) {
-        const formattedData = data.map(product => {
-          let specs = {}
-          try {
-            specs = typeof product.specifications === 'string' 
-              ? JSON.parse(product.specifications) 
-              : product.specifications || {}
-          } catch (e) {
-            console.warn('⚠️ Specifications parse hatası:', e, 'Ürün:', product.name)
-          }
-
-          return {
-            ProductID: product.productid,
-            ProductName: product.name,
-            Slug: product.slug,
-            CategoryID: product.categoryid,
-            Categories: product.categories,
-            ShortDescription: product.shortdescription,
-            Description: product.description,
-            Specifications: specs,
-            Price: product.price,
-            ProductType: specs.type || 'Sale',
-            Length: specs.length || specs.uzunluk || null,
-            Year: specs.year || specs.yil || null,
-            Cabins: specs.cabins || specs.kabin || null,
-            Capacity: specs.capacity || specs.kapasite || null,
-            Speed: specs.speed || specs.hiz || null,
-            Stock: product.stock,
-            IsActive: product.isactive,
-            CreatedDate: product.createddate,
-            ProductImages: product.productimages || []
-          }
-        })
-        
-        // LocalStorage'a da kaydet (fallback için)
-        saveToStorage(formattedData)
-        
-        return formattedData
-      }
+      // Mock data'yı localStorage'a kaydet
+      saveToStorage(mockProducts)
       
-      // Fallback to localStorage
-      const localData = loadFromStorage()
-      return localData
+      return mockProducts
 
     } catch (error) {
       console.error('❌ Ürün yükleme hatası:', error)
