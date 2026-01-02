@@ -8,6 +8,7 @@ const Header = () => {
   const navigate = useNavigate()
   const location = useLocation()
   const [scrolled, setScrolled] = useState(false)
+  const [expanded, setExpanded] = useState(false)
   const { language, toggleLanguage, t } = useLanguage()
 
   useEffect(() => {
@@ -18,6 +19,16 @@ const Header = () => {
     return () => window.removeEventListener('scroll', handleScroll)
   }, [])
 
+  // Sayfa değiştiğinde menüyü kapat
+  useEffect(() => {
+    setExpanded(false)
+  }, [location.pathname])
+
+  // Menü linkine tıklandığında menüyü kapat
+  const handleNavClick = () => {
+    setExpanded(false)
+  }
+
   const isActive = (path) => location.pathname === path
 
   return (
@@ -26,6 +37,8 @@ const Header = () => {
       variant="dark" 
       expand="lg" 
       sticky="top" 
+      expanded={expanded}
+      onToggle={setExpanded}
       className={`py-3 transition-all ${scrolled ? 'shadow-lg' : ''}`}
       style={{ 
         transition: 'all 0.3s ease',
@@ -61,6 +74,7 @@ const Header = () => {
               to="/" 
               className={`fw-semibold px-3 position-relative ${isActive('/') ? 'text-white' : ''}`}
               style={{ transition: 'color 0.3s' }}
+              onClick={handleNavClick}
             >
               🏠 {t('nav.home')}
               {isActive('/') && (
@@ -76,14 +90,14 @@ const Header = () => {
               id="products-dropdown"
               className="fw-semibold"
             >
-              <NavDropdown.Item as={Link} to="/rib-boat">
+              <NavDropdown.Item as={Link} to="/rib-boat" onClick={handleNavClick}>
                 <span style={{ marginRight: '8px' }}>🚤</span> {t('nav.ribBoat')}
               </NavDropdown.Item>
-              <NavDropdown.Item as={Link} to="/equipment">
+              <NavDropdown.Item as={Link} to="/equipment" onClick={handleNavClick}>
                 <span style={{ marginRight: '8px' }}>⚙️</span> {t('nav.equipment')}
               </NavDropdown.Item>
               <NavDropdown.Divider />
-              <NavDropdown.Item as={Link} to="/products">
+              <NavDropdown.Item as={Link} to="/products" onClick={handleNavClick}>
                 <span style={{ marginRight: '8px' }}>📋</span> {t('nav.allProducts')}
               </NavDropdown.Item>
             </NavDropdown>
@@ -92,6 +106,7 @@ const Header = () => {
               as={Link} 
               to="/services" 
               className={`fw-semibold px-3 ${isActive('/services') ? 'text-white' : ''}`}
+              onClick={handleNavClick}
             >
               ⚙️ {t('nav.services')}
             </Nav.Link>
@@ -100,6 +115,7 @@ const Header = () => {
               as={Link} 
               to="/maintenance" 
               className={`fw-semibold px-3 ${isActive('/maintenance') ? 'text-white' : ''}`}
+              onClick={handleNavClick}
             >
               🔧 {t('nav.maintenance')}
             </Nav.Link>
@@ -108,6 +124,7 @@ const Header = () => {
               as={Link} 
               to="/dealers" 
               className={`fw-semibold px-3 ${isActive('/dealers') ? 'text-white' : ''}`}
+              onClick={handleNavClick}
             >
               🤝 {t('nav.dealers')}
             </Nav.Link>
@@ -116,6 +133,7 @@ const Header = () => {
               as={Link} 
               to="/contact" 
               className={`fw-semibold px-3 ${isActive('/contact') ? 'text-white' : ''}`}
+              onClick={handleNavClick}
             >
               📞 {t('nav.contact')}
             </Nav.Link>
