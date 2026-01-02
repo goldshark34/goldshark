@@ -3,6 +3,7 @@ import { AuthProvider } from './context/AuthContext'
 import { LanguageProvider } from './context/LanguageContext'
 import Header from './components/Header'
 import Footer from './components/Footer'
+import ScrollToTop from './components/ScrollToTop'
 import Home from './pages/Home'
 import Products from './pages/Products'
 import ProductDetail from './pages/ProductDetail'
@@ -21,6 +22,7 @@ function App() {
     <AuthProvider>
       <LanguageProvider>
         <Router>
+          <ScrollToTop />
           <div className="App">
             <Header />
             <main>
