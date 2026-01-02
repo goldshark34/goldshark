@@ -155,8 +155,8 @@ const Contact = () => {
                     <div className="fs-4 me-3">✉️</div>
                     <div>
                       <h6 className="fw-bold mb-1">E-posta</h6>
-                      <a href="mailto:goldsharkyachting.34@gmail.com" className="text-decoration-none">
-                        goldsharkyachting.34@gmail.com
+                      <a href="mailto:pinarmarin@gmail.com" className="text-decoration-none">
+                        pinarmarin@gmail.com
                       </a>
                     </div>
                   </div>

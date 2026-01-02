@@ -159,8 +159,8 @@ const Footer = () => {
                 </div>
                 <div className="d-flex align-items-center">
                   <span className="me-2">✉️</span>
-                  <a href="mailto:goldsharkyachting.34@gmail.com" className="text-light opacity-75 text-decoration-none hover-link">
-                    goldsharkyachting.34@gmail.com
+                  <a href="mailto:pinarmarin@gmail.com" className="text-light opacity-75 text-decoration-none hover-link">
+                    pinarmarin@gmail.com
                   </a>
                 </div>
                 <div className="d-flex align-items-center">

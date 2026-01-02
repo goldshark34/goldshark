@@ -6,21 +6,21 @@ const Dealers = () => {
       name: 'İzmir Bayi',
       address: 'Camikebir mah. 7. sokak, No: 7/2 Seferihisar/İzmir',
       phone: '0553 368 66 35',
-      email: 'goldsharkyachting.34@gmail.com',
+      email: 'pinarmarin@gmail.com',
       region: 'Ege'
     },
     {
       name: 'Alaçatı Bayi',
       address: 'Alaçatı Port, Alaçatı/İzmir',
       phone: '0553 368 66 35',
-      email: 'goldsharkyachting.34@gmail.com',
+      email: 'pinarmarin@gmail.com',
       region: 'Ege'
     },
     {
       name: 'Çeşme Bayi',
       address: 'Pınar Marina, 1034 Sok. No: 34 Çeşme/İzmir',
       phone: '0553 368 66 35',
-      email: 'goldsharkyachting.34@gmail.com',
+      email: 'pinarmarin@gmail.com',
       region: 'Ege'
     }
   ]
@@ -108,7 +108,7 @@ const Dealers = () => {
             <p className="mb-4 opacity-75">
               Gold Shark Yatçılık bayilik ağına katılmak için bizimle iletişime geçin
             </p>
-            <a href="mailto:goldsharkyachting.34@gmail.com" className="btn btn-light btn-lg fw-bold px-5">
+            <a href="mailto:pinarmarin@gmail.com" className="btn btn-light btn-lg fw-bold px-5">
               Bayilik Başvurusu
             </a>
           </Card.Body>
