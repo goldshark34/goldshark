@@ -37,7 +37,7 @@ const Home = () => {
       setActiveSlide((prev) => (prev + 1) % 3)
     }, 5000)
     
-    // Ürünleri hemen yükle (cache-first)
+    // Ürünleri hemen yükle
     loadFeaturedYachts()
     
     // Auto-refresh'i başlat (3 dakika)
@@ -67,7 +67,7 @@ const Home = () => {
     const startTime = performance.now()
     
     try {
-      console.log('� Anaasayfa: Ürünler yükleniyor (Cache-First)...')
+      console.log('🔄 Anasayfa: Ürünler yükleniyor...')
       const data = await productService.getAllProducts()
       
       const loadTime = performance.now() - startTime
@@ -107,23 +107,13 @@ const Home = () => {
       
       console.log('✅ Anasayfa: Öne çıkan ürünler hazırlandı:', featured.length, 'adet')
       
-      // Smooth update - sadece değişiklik varsa güncelle
-      setFeaturedYachts(prevYachts => {
-        const hasChanges = JSON.stringify(prevYachts) !== JSON.stringify(featured)
-        if (hasChanges) {
-          console.log('🔄 Anasayfa: Ürünler güncellendi')
-          return [...featured]
-        }
-        console.log('✨ Anasayfa: Ürünler değişmedi, güncelleme atlandı')
-        return prevYachts
-      })
+      // Ürünleri güncelle
+      setFeaturedYachts([...featured])
       
     } catch (error) {
       console.error('❌ Anasayfa: Öne çıkan ürünler yüklenirken hata:', error)
-      // Hata durumunda mevcut state'i koru
-      if (featuredYachts.length === 0) {
-        setFeaturedYachts([])
-      }
+      // Hata durumunda boş liste göster
+      setFeaturedYachts([])
     }
   }
 

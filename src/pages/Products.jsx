@@ -39,7 +39,7 @@ const Products = () => {
     
     try {
       setLoading(true)
-      console.log('🔄 Products sayfası: Ürünler yükleniyor (Cache-First)...')
+      console.log('🔄 Products sayfası: Ürünler yükleniyor...')
       
       const data = await productService.getAllProducts()
       
