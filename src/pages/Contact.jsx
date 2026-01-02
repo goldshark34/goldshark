@@ -186,11 +186,15 @@ const Contact = () => {
                     target="_blank"
                     rel="noopener noreferrer"
                     variant="outline-danger" 
-                    className="rounded-circle d-flex align-items-center justify-content-center" 
-                    style={{ width: '45px', height: '45px' }}
+                    className="rounded-circle d-flex align-items-center justify-content-center p-0" 
+                    style={{ width: '45px', height: '45px', border: 'none' }}
                     title="Instagram'da Takip Edin"
                   >
-                    📷
+                    <img 
+                      src="https://img.freepik.com/premium-vector/instagram-icon_768467-672.jpg?semt=ais_hybrid&w=740&q=80"
+                      alt="Instagram"
+                      style={{ width: '28px', height: '28px', borderRadius: '6px' }}
+                    />
                   </Button>
                   <Button 
                     variant="outline-primary" 

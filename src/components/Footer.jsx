@@ -71,11 +71,15 @@ const Footer = () => {
                   rel="noopener noreferrer"
                   variant="outline-light" 
                   size="sm" 
-                  className="rounded-circle d-flex align-items-center justify-content-center"
-                  style={{ width: '40px', height: '40px' }}
+                  className="rounded-circle d-flex align-items-center justify-content-center p-0"
+                  style={{ width: '40px', height: '40px', border: 'none' }}
                   title="Instagram'da Takip Edin"
                 >
-                  📷
+                  <img 
+                    src="https://img.freepik.com/premium-vector/instagram-icon_768467-672.jpg?semt=ais_hybrid&w=740&q=80"
+                    alt="Instagram"
+                    style={{ width: '24px', height: '24px', borderRadius: '4px' }}
+                  />
                 </Button>
                 <Button 
                   variant="outline-light" 
