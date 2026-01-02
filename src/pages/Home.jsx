@@ -84,6 +84,7 @@ const Home = () => {
         
         featured.push({
           id: product.ProductID,
+          slug: product.Slug || `product-${product.ProductID}`,
           name: product.ProductName,
           price: product.Price ? `${product.Price.toLocaleString('tr-TR')} €` : t('product.priceNotSpecified'),
           type: product.ProductType === 'Sale' ? t('product.forSale') : t('product.forRent'),
@@ -295,7 +296,12 @@ const Home = () => {
                         <div>
                           <div className="fw-bold fs-4 text-warning">{yacht.price}</div>
                         </div>
-                        <Button variant="dark" className="fw-bold">
+                        <Button 
+                          as={Link} 
+                          to={`/product/${yacht.slug || yacht.id}`}
+                          variant="dark" 
+                          className="fw-bold"
+                        >
                           {t('product.details')} →
                         </Button>
                       </div>

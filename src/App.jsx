@@ -5,6 +5,7 @@ import Header from './components/Header'
 import Footer from './components/Footer'
 import Home from './pages/Home'
 import Products from './pages/Products'
+import ProductDetail from './pages/ProductDetail'
 import RibBoat from './pages/RibBoat'
 import Equipment from './pages/Equipment'
 import Services from './pages/Services'
@@ -26,6 +27,7 @@ function App() {
               <Routes>
                 <Route path="/" element={<Home />} />
                 <Route path="/products" element={<Products />} />
+                <Route path="/product/:slug" element={<ProductDetail />} />
                 <Route path="/rib-boat" element={<RibBoat />} />
                 <Route path="/equipment" element={<Equipment />} />
                 <Route path="/services" element={<Services />} />

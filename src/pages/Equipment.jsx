@@ -1,5 +1,6 @@
 import { useState, useEffect } from 'react'
 import { Container, Row, Col, Card, Button, Badge, Spinner } from 'react-bootstrap'
+import { Link } from 'react-router-dom'
 import { productService } from '../services/productService'
 
 const Equipment = () => {
@@ -26,7 +27,10 @@ const Equipment = () => {
       // Sadece Malzeme ve Ekipmanlar kategorisindeki ürünleri filtrele
       const equipment = data.filter(product => {
         const categoryName = product.Categories?.name || product.categoryName
-        console.log(`Ürün: ${product.ProductName}, Kategori: ${categoryName}`)
+        console.log(`🔍 Ürün: ${product.ProductName}`)
+        console.log(`📂 Kategori ID: ${product.CategoryID}`)
+        console.log(`📂 Kategori Adı: ${categoryName}`)
+        console.log(`✅ Ekipman mu?: ${categoryName === 'Malzeme ve Ekipmanlar'}`)
         return categoryName === 'Malzeme ve Ekipmanlar'
       })
       
@@ -124,7 +128,12 @@ const Equipment = () => {
                             {product.Price ? `${product.Price.toLocaleString('tr-TR')} €` : 'Fiyat Belirtilmemiş'}
                           </div>
                         </div>
-                        <Button variant="primary" className="fw-bold">
+                        <Button 
+                          as={Link} 
+                          to={`/product/${product.Slug || product.ProductID}`}
+                          variant="primary" 
+                          className="fw-bold"
+                        >
                           Detaylar →
                         </Button>
                       </div>

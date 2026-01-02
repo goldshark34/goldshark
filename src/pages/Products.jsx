@@ -1,5 +1,6 @@
 import { useState, useEffect } from 'react'
 import { Container, Row, Col, Card, Button, Badge, Form, InputGroup, Spinner } from 'react-bootstrap'
+import { Link } from 'react-router-dom'
 import { productService } from '../services/productService'
 
 const Products = () => {
@@ -32,6 +33,7 @@ const Products = () => {
         const specs = product.Specifications || {}
         return {
           id: product.ProductID,
+          slug: product.Slug || `product-${product.ProductID}`,
           name: product.ProductName,
           price: product.Price || 0,
           priceText: product.Price ? `${product.Price.toLocaleString('tr-TR')} €` : 'Fiyat Belirtilmemiş',
@@ -224,7 +226,12 @@ return 0
                     <div>
                       <div className="fw-bold fs-5 text-warning">{yacht.priceText}</div>
                     </div>
-                    <Button variant="dark" className="fw-bold">
+                    <Button 
+                      as={Link} 
+                      to={`/product/${yacht.slug || yacht.id}`}
+                      variant="dark" 
+                      className="fw-bold"
+                    >
                       Detaylar →
                     </Button>
                   </div>
