@@ -4,6 +4,7 @@ import { Link } from 'react-router-dom'
 import { productService } from '../services/productService'
 import { useLanguage } from '../context/LanguageContext'
 import Logo from '../components/Logo'
+import LazyImage from '../components/LazyImage'
 
 const Home = () => {
   const [activeSlide, setActiveSlide] = useState(0)
@@ -36,16 +37,24 @@ const Home = () => {
       setActiveSlide((prev) => (prev + 1) % 3)
     }, 5000)
     
+    // Ürünleri hemen yükle (cache-first)
     loadFeaturedYachts()
     
-    // Ürünleri her 2 dakikada bir yenile (120 saniye)
-    const productTimer = setInterval(() => {
+    // Auto-refresh'i başlat (3 dakika)
+    productService.startAutoRefresh()
+    
+    // Background refresh'leri dinle
+    const handleProductsUpdated = (event) => {
+      console.log('🔄 Products updated event received:', event.detail.source)
       loadFeaturedYachts()
-    }, 120000)
+    }
+    
+    window.addEventListener('productsUpdated', handleProductsUpdated)
     
     return () => {
       clearInterval(timer)
-      clearInterval(productTimer)
+      productService.stopAutoRefresh()
+      window.removeEventListener('productsUpdated', handleProductsUpdated)
     }
   }, [])
   
@@ -55,11 +64,15 @@ const Home = () => {
   }, [featuredYachts])
 
   const loadFeaturedYachts = async () => {
+    const startTime = performance.now()
+    
     try {
-      console.log('🔄 Anasayfa: Ürünler yükleniyor...')
+      console.log('� Anaasayfa: Ürünler yükleniyor (Cache-First)...')
       const data = await productService.getAllProducts()
+      
+      const loadTime = performance.now() - startTime
+      console.log(`⚡ Anasayfa: Ürünler ${loadTime.toFixed(2)}ms'de yüklendi`)
       console.log('📦 Anasayfa: Gelen ürün sayısı:', data?.length || 0)
-      console.log('📦 Anasayfa: Gelen veri:', data)
       
       if (!data || data.length === 0) {
         console.warn('⚠️ Anasayfa: Hiç ürün bulunamadı')
@@ -73,14 +86,10 @@ const Home = () => {
       
       for (let i = 0; i < productsToShow.length; i++) {
         const product = productsToShow[i]
-        console.log('🔍 Ürün işleniyor:', product)
-        console.log('📸 Ürün görselleri:', product.ProductImages)
         
         const imageUrl = product.ProductImages?.[0]?.ImageURL || 
                         product.ProductImages?.[0]?.imageurl || 
                         'https://images.unsplash.com/photo-1567899378494-47b22a2ae96a?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80'
-        
-        console.log('🖼️ Kullanılacak görsel:', imageUrl)
         
         featured.push({
           id: product.ProductID,
@@ -96,16 +105,25 @@ const Home = () => {
         })
       }
       
-      console.log('✅ Anasayfa: Öne çıkan ürünler hazırlandı:', featured)
-      console.log('📊 Featured array uzunluğu:', featured.length)
-      console.log('📊 Featured array tipi:', Array.isArray(featured))
+      console.log('✅ Anasayfa: Öne çıkan ürünler hazırlandı:', featured.length, 'adet')
       
-      // Veritabanından gelen ürünleri kullan
-      setFeaturedYachts([...featured])
+      // Smooth update - sadece değişiklik varsa güncelle
+      setFeaturedYachts(prevYachts => {
+        const hasChanges = JSON.stringify(prevYachts) !== JSON.stringify(featured)
+        if (hasChanges) {
+          console.log('🔄 Anasayfa: Ürünler güncellendi')
+          return [...featured]
+        }
+        console.log('✨ Anasayfa: Ürünler değişmedi, güncelleme atlandı')
+        return prevYachts
+      })
+      
     } catch (error) {
       console.error('❌ Anasayfa: Öne çıkan ürünler yüklenirken hata:', error)
-      // Hata durumunda boş liste göster
-      setFeaturedYachts([])
+      // Hata durumunda mevcut state'i koru
+      if (featuredYachts.length === 0) {
+        setFeaturedYachts([])
+      }
     }
   }
 
@@ -228,9 +246,9 @@ const Home = () => {
                 <Col key={yacht.id} lg={4} md={6}>
                   <Card className="border-0 shadow h-100 overflow-hidden" style={{ transition: 'transform 0.3s' }}>
                     <div className="position-relative overflow-hidden" style={{ height: '280px' }}>
-                      <Card.Img
-                        variant="top"
+                      <LazyImage
                         src={yacht.image}
+                        alt={yacht.name}
                         style={{ height: '100%', objectFit: 'cover', transition: 'transform 0.5s' }}
                         className="hover-zoom"
                       />

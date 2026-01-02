@@ -1,19 +1,32 @@
 import { supabase } from '../lib/supabase'
+import { cacheManager } from '../utils/cacheManager'
+import { refreshScheduler } from '../utils/refreshScheduler'
 
-// LocalStorage'da ürünleri sakla (test için)
+// Cache keys
+const CACHE_KEYS = {
+  ALL_PRODUCTS: 'all_products',
+  PRODUCT_BY_SLUG: 'product_by_slug_'
+}
+
+// LocalStorage'da ürünleri sakla (fallback için)
 const STORAGE_KEY = 'luxury_yachts_products'
 
-// Mock ürünler - Başlangıçta boş
-const mockProducts = []
+// Performance tracking
+let performanceMetrics = {
+  cacheHits: 0,
+  cacheMisses: 0,
+  networkRequests: 0,
+  errors: 0,
+  averageLoadTime: 0
+}
 
-// LocalStorage'dan ürünleri yükle
+// LocalStorage'dan ürünleri yükle (fallback)
 const loadFromStorage = () => {
   try {
     const stored = localStorage.getItem(STORAGE_KEY)
     if (stored) {
       return JSON.parse(stored)
     }
-    // İlk yükleme için boş array kaydet
     localStorage.setItem(STORAGE_KEY, JSON.stringify([]))
     return []
   } catch (error) {
@@ -22,7 +35,7 @@ const loadFromStorage = () => {
   }
 }
 
-// LocalStorage'a kaydet
+// LocalStorage'a kaydet (fallback)
 const saveToStorage = (products) => {
   try {
     localStorage.setItem(STORAGE_KEY, JSON.stringify(products))
@@ -31,12 +44,93 @@ const saveToStorage = (products) => {
   }
 }
 
+// Retry with exponential backoff
+const retryWithBackoff = async (fn, maxRetries = 3, baseDelay = 1000) => {
+  for (let i = 0; i < maxRetries; i++) {
+    try {
+      return await fn()
+    } catch (error) {
+      if (i === maxRetries - 1) throw error
+      
+      const delay = baseDelay * Math.pow(2, i)
+      console.log(`⏳ Retry ${i + 1}/${maxRetries} after ${delay}ms:`, error.message)
+      await new Promise(resolve => setTimeout(resolve, delay))
+    }
+  }
+}
+
 export const productService = {
   async getAllProducts() {
+    const startTime = performance.now()
+    
     try {
-      console.log('🔄 ProductService: Ürünler yükleniyor...')
+      console.log('🔄 ProductService: Ürünler yükleniyor (Cache-First)...')
       
-      // Önce Supabase'i dene
+      // 1. Önce cache'den kontrol et
+      const cachedProducts = cacheManager.get(CACHE_KEYS.ALL_PRODUCTS)
+      if (cachedProducts) {
+        performanceMetrics.cacheHits++
+        const loadTime = performance.now() - startTime
+        console.log(`⚡ Cache hit! Ürünler ${loadTime.toFixed(2)}ms'de yüklendi`)
+        
+        // Background'da fresh data çek (stale ise)
+        if (cacheManager.isStale(CACHE_KEYS.ALL_PRODUCTS)) {
+          console.log('🔄 Cache stale, background refresh başlatılıyor...')
+          this.refreshProductsInBackground()
+        }
+        
+        return cachedProducts
+      }
+
+      performanceMetrics.cacheMisses++
+      console.log('💾 Cache miss, network'den yükleniyor...')
+
+      // 2. Network'den yükle
+      const networkData = await this.loadFromNetwork()
+      
+      if (networkData && networkData.length > 0) {
+        // Cache'e kaydet
+        cacheManager.set(CACHE_KEYS.ALL_PRODUCTS, networkData)
+        
+        const loadTime = performance.now() - startTime
+        performanceMetrics.averageLoadTime = loadTime
+        console.log(`✅ Network'den ${networkData.length} ürün yüklendi (${loadTime.toFixed(2)}ms)`)
+        
+        return networkData
+      }
+
+      // 3. Fallback to localStorage
+      console.log('📭 Network'den veri gelmedi, localStorage kontrol ediliyor...')
+      const localData = loadFromStorage()
+      
+      if (localData.length > 0) {
+        // Cache'e de kaydet
+        cacheManager.set(CACHE_KEYS.ALL_PRODUCTS, localData)
+      }
+      
+      return localData
+
+    } catch (error) {
+      performanceMetrics.errors++
+      console.error('❌ Ürün yükleme hatası:', error)
+      
+      // Fallback to cache even if expired
+      const expiredCache = cacheManager.get(CACHE_KEYS.ALL_PRODUCTS)
+      if (expiredCache) {
+        console.log('🔄 Expired cache kullanılıyor...')
+        return expiredCache
+      }
+      
+      // Final fallback to localStorage
+      return loadFromStorage()
+    }
+  },
+
+  // Network'den ürünleri yükle
+  async loadFromNetwork() {
+    return await retryWithBackoff(async () => {
+      performanceMetrics.networkRequests++
+      
       const { data, error } = await supabase
         .from('products')
         .select(`
@@ -57,18 +151,12 @@ export const productService = {
         .eq('isactive', true)
         .order('createddate', { ascending: false })
 
-      if (error) {
-        console.warn('⚠️ Supabase hatası:', error)
-        throw error
-      }
+      if (error) throw error
       
-      console.log('📥 Supabase\'den gelen ham veri:', data)
-      console.log('📊 Toplam ürün sayısı:', data?.length || 0)
+      console.log('📥 Supabase\'den gelen ham veri:', data?.length || 0, 'ürün')
       
       if (data && data.length > 0) {
-        // Veriyi düzenle
         const formattedData = data.map(product => {
-          // Specifications JSON parse et
           let specs = {}
           try {
             specs = typeof product.specifications === 'string' 
@@ -78,7 +166,7 @@ export const productService = {
             console.warn('⚠️ Specifications parse hatası:', e, 'Ürün:', product.name)
           }
 
-          const formatted = {
+          return {
             ProductID: product.productid,
             ProductName: product.name,
             Slug: product.slug,
@@ -99,96 +187,163 @@ export const productService = {
             CreatedDate: product.createddate,
             ProductImages: product.productimages || []
           }
-          
-          console.log(`📦 Formatlanmış ürün: ${formatted.ProductName}`, {
-            ProductID: formatted.ProductID,
-            CategoryID: formatted.CategoryID,
-            Categories: formatted.Categories,
-            kategoriAdi: formatted.Categories?.name,
-            specifications: formatted.Specifications,
-            images: formatted.ProductImages?.length || 0
-          })
-          
-          return formatted
         })
         
-        console.log('✅ Tüm formatlanmış ürünler:', formattedData.length, 'adet')
+        // LocalStorage'a da kaydet (fallback için)
+        saveToStorage(formattedData)
+        
         return formattedData
-      } else {
-        console.log('📭 Supabase\'den veri gelmedi, LocalStorage kontrol ediliyor...')
+      }
+      
+      return []
+    }, 3, 1000) // 3 retry, 1 second base delay
+  },
+
+  // Background'da ürünleri yenile
+  async refreshProductsInBackground() {
+    try {
+      console.log('🔄 Background refresh başlatılıyor...')
+      const freshData = await this.loadFromNetwork()
+      
+      if (freshData && freshData.length > 0) {
+        cacheManager.set(CACHE_KEYS.ALL_PRODUCTS, freshData)
+        console.log('✅ Background refresh tamamlandı')
+        
+        // Custom event dispatch et (UI güncellemesi için)
+        window.dispatchEvent(new CustomEvent('productsUpdated', { 
+          detail: { products: freshData, source: 'background' }
+        }))
       }
     } catch (error) {
-      console.warn('⚠️ Supabase ürünleri yüklenemedi, local data kullanılıyor:', error)
+      console.warn('⚠️ Background refresh hatası:', error)
     }
+  },
+
+  // 3 dakikalık refresh scheduler'ı başlat
+  startAutoRefresh() {
+    refreshScheduler.start('products', () => {
+      this.refreshProductsInBackground()
+    }, 3 * 60 * 1000) // 3 minutes
     
-    // LocalStorage'dan yükle
-    console.log('💾 LocalStorage\'dan ürünler yükleniyor...')
-    const localData = loadFromStorage()
-    console.log('📦 LocalStorage\'dan gelen ürün sayısı:', localData.length)
-    return localData
+    console.log('🔄 Auto-refresh başlatıldı (3 dakika)')
+  },
+
+  // Auto refresh'i durdur
+  stopAutoRefresh() {
+    refreshScheduler.stop('products')
+    console.log('⏹️ Auto-refresh durduruldu')
   },
 
   async getProductBySlug(slug) {
+    const startTime = performance.now()
+    const cacheKey = CACHE_KEYS.PRODUCT_BY_SLUG + slug
+    
     try {
-      const { data, error } = await supabase
-        .from('products')
-        .select(`
-          productid,
-          name,
-          slug,
-          categoryid,
-          shortdescription,
-          description,
-          specifications,
-          price,
-          stock,
-          isactive,
-          createddate,
-          categories:categoryid (categoryid, name),
-          productimages:productid (imageid, imageurl, ismain)
-        `)
-        .eq('slug', slug)
-        .eq('isactive', true)
-        .single()
+      // Cache'den kontrol et
+      const cachedProduct = cacheManager.get(cacheKey)
+      if (cachedProduct) {
+        performanceMetrics.cacheHits++
+        const loadTime = performance.now() - startTime
+        console.log(`⚡ Product cache hit for ${slug} (${loadTime.toFixed(2)}ms)`)
+        return cachedProduct
+      }
 
-      if (error) throw error
+      performanceMetrics.cacheMisses++
       
-      // Veriyi formatla
-      let specs = {}
-      try {
-        specs = typeof data.specifications === 'string' 
-          ? JSON.parse(data.specifications) 
-          : data.specifications || {}
-      } catch (e) {
-        console.warn('Specifications parse hatası:', e)
+      // Network'den yükle
+      const networkProduct = await retryWithBackoff(async () => {
+        const { data, error } = await supabase
+          .from('products')
+          .select(`
+            productid,
+            name,
+            slug,
+            categoryid,
+            shortdescription,
+            description,
+            specifications,
+            price,
+            stock,
+            isactive,
+            createddate,
+            categories:categoryid (categoryid, name),
+            productimages:productid (imageid, imageurl, ismain)
+          `)
+          .eq('slug', slug)
+          .eq('isactive', true)
+          .single()
+
+        if (error) throw error
+        return data
+      })
+
+      if (networkProduct) {
+        // Veriyi formatla
+        let specs = {}
+        try {
+          specs = typeof networkProduct.specifications === 'string' 
+            ? JSON.parse(networkProduct.specifications) 
+            : networkProduct.specifications || {}
+        } catch (e) {
+          console.warn('Specifications parse hatası:', e)
+        }
+
+        const formattedProduct = {
+          ProductID: networkProduct.productid,
+          ProductName: networkProduct.name,
+          Slug: networkProduct.slug,
+          CategoryID: networkProduct.categoryid,
+          Categories: networkProduct.categories,
+          ShortDescription: networkProduct.shortdescription,
+          Description: networkProduct.description,
+          Specifications: specs,
+          Price: networkProduct.price,
+          ProductType: specs.type || 'Sale',
+          Length: specs.length || specs.uzunluk || null,
+          Year: specs.year || specs.yil || null,
+          Cabins: specs.cabins || specs.kabin || null,
+          Capacity: specs.capacity || specs.kapasite || null,
+          Speed: specs.speed || specs.hiz || null,
+          Stock: networkProduct.stock,
+          IsActive: networkProduct.isactive,
+          CreatedDate: networkProduct.createddate,
+          ProductImages: networkProduct.productimages || []
+        }
+
+        // Cache'e kaydet
+        cacheManager.set(cacheKey, formattedProduct)
+        
+        return formattedProduct
       }
 
-      return {
-        ProductID: data.productid,
-        ProductName: data.name,
-        Slug: data.slug,
-        CategoryID: data.categoryid,
-        Categories: data.categories,
-        ShortDescription: data.shortdescription,
-        Description: data.description,
-        Specifications: specs,
-        Price: data.price,
-        ProductType: specs.type || 'Sale',
-        Length: specs.length || specs.uzunluk || null,
-        Year: specs.year || specs.yil || null,
-        Cabins: specs.cabins || specs.kabin || null,
-        Capacity: specs.capacity || specs.kapasite || null,
-        Speed: specs.speed || specs.hiz || null,
-        Stock: data.stock,
-        IsActive: data.isactive,
-        CreatedDate: data.createddate,
-        ProductImages: data.productimages || []
-      }
     } catch (error) {
       console.warn('Supabase ürün yüklenemedi, local data kullanılıyor:', error)
+      
+      // Fallback: Tüm ürünlerden bul
       const products = loadFromStorage()
-      return products.find(p => p.slug === slug)
+      const product = products.find(p => p.slug === slug)
+      
+      if (product) {
+        cacheManager.set(cacheKey, product)
+      }
+      
+      return product
     }
+  },
+
+  // Performance metrics'i al
+  getPerformanceMetrics() {
+    return {
+      ...performanceMetrics,
+      cacheStats: cacheManager.getStats(),
+      schedulerStatus: refreshScheduler.getStatus()
+    }
+  },
+
+  // Cache'i temizle
+  clearCache() {
+    cacheManager.clear()
+    console.log('🧹 Product cache temizlendi')
   },
 
   async createProduct(productData) {

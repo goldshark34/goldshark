@@ -2,6 +2,8 @@ import { useState, useEffect } from 'react'
 import { Container, Row, Col, Card, Button, Badge, Form, InputGroup, Spinner } from 'react-bootstrap'
 import { Link } from 'react-router-dom'
 import { productService } from '../services/productService'
+import LazyImage from '../components/LazyImage'
+import { ProductSkeletonGrid } from '../components/ProductSkeleton'
 
 const Products = () => {
   const [filter, setFilter] = useState('all')
@@ -12,21 +14,38 @@ const Products = () => {
   const [error, setError] = useState(null)
 
   useEffect(() => {
+    // Ürünleri hemen yükle (cache-first)
     loadProducts()
     
-    // Her 2 dakikada bir ürünleri yenile (120 saniye)
-    const interval = setInterval(() => {
-      loadProducts()
-    }, 120000)
+    // Auto-refresh'i başlat (3 dakika)
+    productService.startAutoRefresh()
     
-    return () => clearInterval(interval)
+    // Background refresh'leri dinle
+    const handleProductsUpdated = (event) => {
+      console.log('🔄 Products page: Products updated event received:', event.detail.source)
+      loadProducts()
+    }
+    
+    window.addEventListener('productsUpdated', handleProductsUpdated)
+    
+    return () => {
+      productService.stopAutoRefresh()
+      window.removeEventListener('productsUpdated', handleProductsUpdated)
+    }
   }, [])
 
   const loadProducts = async () => {
+    const startTime = performance.now()
+    
     try {
       setLoading(true)
+      console.log('🔄 Products sayfası: Ürünler yükleniyor (Cache-First)...')
+      
       const data = await productService.getAllProducts()
-      console.log('📦 Products sayfası - Gelen veri:', data)
+      
+      const loadTime = performance.now() - startTime
+      console.log(`⚡ Products sayfası: Ürünler ${loadTime.toFixed(2)}ms'de yüklendi`)
+      console.log('📦 Products sayfası - Gelen veri:', data?.length || 0, 'ürün')
       
       // Veritabanından gelen veriyi frontend formatına çevir
       const formattedYachts = data.map(product => {
@@ -57,14 +76,27 @@ const Products = () => {
         }
       })
       
-      console.log('✅ Formatlanmış ürünler:', formattedYachts)
-      setYachts(formattedYachts)
+      console.log('✅ Formatlanmış ürünler:', formattedYachts.length, 'adet')
+      
+      // Smooth update - sadece değişiklik varsa güncelle
+      setYachts(prevYachts => {
+        const hasChanges = JSON.stringify(prevYachts) !== JSON.stringify(formattedYachts)
+        if (hasChanges) {
+          console.log('🔄 Products sayfası: Ürünler güncellendi')
+          return formattedYachts
+        }
+        console.log('✨ Products sayfası: Ürünler değişmedi, güncelleme atlandı')
+        return prevYachts
+      })
+      
       setError(null)
     } catch (err) {
       console.error('❌ Ürünler yüklenirken hata:', err)
       setError('Ürünler yüklenirken bir hata oluştu')
-      // Hata durumunda boş liste göster
-      setYachts([])
+      // Hata durumunda mevcut state'i koru
+      if (yachts.length === 0) {
+        setYachts([])
+      }
     } finally {
       setLoading(false)
     }
@@ -93,10 +125,9 @@ return 0
 
       <Container className="py-5">
         {loading ? (
-          <div className="text-center py-5">
-            <Spinner animation="border" variant="primary" style={{ width: '3rem', height: '3rem' }} />
-            <p className="mt-3 text-muted">Ürünler yükleniyor...</p>
-          </div>
+          <Row className="g-4">
+            <ProductSkeletonGrid count={6} />
+          </Row>
         ) : error ? (
           <div className="text-center py-5">
             <div className="fs-1 mb-3">⚠️</div>
@@ -162,9 +193,9 @@ return 0
             <Col key={yacht.id || index} lg={4} md={6}>
               <Card className="h-100 border-0 shadow-sm overflow-hidden yacht-card">
                 <div className="position-relative overflow-hidden" style={{ height: '280px' }}>
-                  <Card.Img 
-                    variant="top" 
-                    src={yacht.image} 
+                  <LazyImage
+                    src={yacht.image}
+                    alt={yacht.name}
                     style={{ height: '100%', objectFit: 'cover', transition: 'transform 0.5s' }}
                     className="yacht-image"
                   />
