@@ -101,7 +101,10 @@ export const productService = {
           }
           
           console.log(`📦 Formatlanmış ürün: ${formatted.ProductName}`, {
-            kategori: formatted.Categories?.name,
+            ProductID: formatted.ProductID,
+            CategoryID: formatted.CategoryID,
+            Categories: formatted.Categories,
+            kategoriAdi: formatted.Categories?.name,
             specifications: formatted.Specifications,
             images: formatted.ProductImages?.length || 0
           })

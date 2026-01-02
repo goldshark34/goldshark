@@ -22,22 +22,32 @@ const RibBoat = () => {
     try {
       setLoading(true)
       const data = await productService.getAllProducts()
-      console.log('📦 Tüm ürünler:', data)
+      console.log('📦 RibBoat - Tüm ürünler:', data)
       
       // Sadece Rib Boat kategorisindeki ürünleri filtrele
       const ribBoats = data.filter(product => {
         const categoryName = product.Categories?.name || product.categoryName
+        const categoryId = product.CategoryID || product.categoryid
+        
         console.log(`🔍 Ürün: ${product.ProductName}`)
-        console.log(`📂 Kategori ID: ${product.CategoryID}`)
+        console.log(`📂 Kategori ID: ${categoryId}`)
         console.log(`📂 Kategori Adı: ${categoryName}`)
-        console.log(`✅ Rib Boat mu?: ${categoryName === 'Rib Boat'}`)
-        return categoryName === 'Rib Boat'
+        
+        // Çoklu kontrol: kategori adı veya ID ile eşleştir
+        const isRibBoat = categoryName === 'Rib Boat' || 
+                         categoryName === 'rib-boat' || 
+                         categoryId === 1 ||
+                         categoryId === '1'
+        
+        console.log(`✅ Rib Boat mu?: ${isRibBoat}`)
+        return isRibBoat
       })
       
-      console.log('🚤 Rib Boat ürünleri:', ribBoats)
+      console.log('🚤 Filtrelenmiş Rib Boat ürünleri:', ribBoats)
       setProducts(ribBoats)
     } catch (error) {
-      console.error('Rib Boat ürünleri yüklenirken hata:', error)
+      console.error('❌ Rib Boat ürünleri yüklenirken hata:', error)
+      setProducts([])
     } finally {
       setLoading(false)
     }

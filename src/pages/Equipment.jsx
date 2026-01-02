@@ -22,22 +22,32 @@ const Equipment = () => {
     try {
       setLoading(true)
       const data = await productService.getAllProducts()
-      console.log('📦 Tüm ürünler:', data)
+      console.log('📦 Equipment - Tüm ürünler:', data)
       
       // Sadece Malzeme ve Ekipmanlar kategorisindeki ürünleri filtrele
       const equipment = data.filter(product => {
         const categoryName = product.Categories?.name || product.categoryName
+        const categoryId = product.CategoryID || product.categoryid
+        
         console.log(`🔍 Ürün: ${product.ProductName}`)
-        console.log(`📂 Kategori ID: ${product.CategoryID}`)
+        console.log(`📂 Kategori ID: ${categoryId}`)
         console.log(`📂 Kategori Adı: ${categoryName}`)
-        console.log(`✅ Ekipman mu?: ${categoryName === 'Malzeme ve Ekipmanlar'}`)
-        return categoryName === 'Malzeme ve Ekipmanlar'
+        
+        // Çoklu kontrol: kategori adı veya ID ile eşleştir
+        const isEquipment = categoryName === 'Malzeme ve Ekipmanlar' || 
+                           categoryName === 'equipment' || 
+                           categoryId === 2 ||
+                           categoryId === '2'
+        
+        console.log(`✅ Ekipman mu?: ${isEquipment}`)
+        return isEquipment
       })
       
-      console.log('⚙️ Ekipman ürünleri:', equipment)
+      console.log('⚙️ Filtrelenmiş Ekipman ürünleri:', equipment)
       setProducts(equipment)
     } catch (error) {
-      console.error('Ekipman ürünleri yüklenirken hata:', error)
+      console.error('❌ Ekipman ürünleri yüklenirken hata:', error)
+      setProducts([])
     } finally {
       setLoading(false)
     }
