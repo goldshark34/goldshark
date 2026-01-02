@@ -65,34 +65,45 @@ const Footer = () => {
               </p>
               <div className="d-flex gap-2">
                 <Button 
+                  as="a"
+                  href="https://www.instagram.com/goldsharkyachting/"
+                  target="_blank"
+                  rel="noopener noreferrer"
                   variant="outline-light" 
                   size="sm" 
-                  className="rounded-circle"
+                  className="rounded-circle d-flex align-items-center justify-content-center"
                   style={{ width: '40px', height: '40px' }}
-                >
-                  📘
-                </Button>
-                <Button 
-                  variant="outline-light" 
-                  size="sm" 
-                  className="rounded-circle"
-                  style={{ width: '40px', height: '40px' }}
+                  title="Instagram'da Takip Edin"
                 >
                   📷
                 </Button>
                 <Button 
                   variant="outline-light" 
                   size="sm" 
-                  className="rounded-circle"
-                  style={{ width: '40px', height: '40px' }}
+                  className="rounded-circle d-flex align-items-center justify-content-center"
+                  style={{ width: '40px', height: '40px', opacity: 0.5 }}
+                  disabled
+                  title="Yakında"
+                >
+                  📘
+                </Button>
+                <Button 
+                  variant="outline-light" 
+                  size="sm" 
+                  className="rounded-circle d-flex align-items-center justify-content-center"
+                  style={{ width: '40px', height: '40px', opacity: 0.5 }}
+                  disabled
+                  title="Yakında"
                 >
                   🐦
                 </Button>
                 <Button 
                   variant="outline-light" 
                   size="sm" 
-                  className="rounded-circle"
-                  style={{ width: '40px', height: '40px' }}
+                  className="rounded-circle d-flex align-items-center justify-content-center"
+                  style={{ width: '40px', height: '40px', opacity: 0.5 }}
+                  disabled
+                  title="Yakında"
                 >
                   💼
                 </Button>

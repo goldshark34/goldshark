@@ -177,21 +177,52 @@ const Contact = () => {
 
             <Card className="border-0 shadow-sm">
               <Card.Body className="p-4">
-                <h5 className="fw-bold mb-3">Sosyal Medya</h5>
+                <h5 className="fw-bold mb-3">📱 Sosyal Medya</h5>
+                <p className="text-muted mb-3">Bizi sosyal medyada takip edin!</p>
                 <div className="d-flex gap-2">
-                  <Button variant="outline-primary" className="rounded-circle" style={{ width: '45px', height: '45px' }}>
-                    📘
-                  </Button>
-                  <Button variant="outline-danger" className="rounded-circle" style={{ width: '45px', height: '45px' }}>
+                  <Button 
+                    as="a"
+                    href="https://www.instagram.com/goldsharkyachting/"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    variant="outline-danger" 
+                    className="rounded-circle d-flex align-items-center justify-content-center" 
+                    style={{ width: '45px', height: '45px' }}
+                    title="Instagram'da Takip Edin"
+                  >
                     📷
                   </Button>
-                  <Button variant="outline-info" className="rounded-circle" style={{ width: '45px', height: '45px' }}>
+                  <Button 
+                    variant="outline-primary" 
+                    className="rounded-circle d-flex align-items-center justify-content-center" 
+                    style={{ width: '45px', height: '45px', opacity: 0.5 }}
+                    disabled
+                    title="Yakında"
+                  >
+                    📘
+                  </Button>
+                  <Button 
+                    variant="outline-info" 
+                    className="rounded-circle d-flex align-items-center justify-content-center" 
+                    style={{ width: '45px', height: '45px', opacity: 0.5 }}
+                    disabled
+                    title="Yakında"
+                  >
                     🐦
                   </Button>
-                  <Button variant="outline-dark" className="rounded-circle" style={{ width: '45px', height: '45px' }}>
+                  <Button 
+                    variant="outline-dark" 
+                    className="rounded-circle d-flex align-items-center justify-content-center" 
+                    style={{ width: '45px', height: '45px', opacity: 0.5 }}
+                    disabled
+                    title="Yakında"
+                  >
                     💼
                   </Button>
                 </div>
+                <small className="text-muted mt-2 d-block">
+                  @goldsharkyachting
+                </small>
               </Card.Body>
             </Card>
           </Col>
